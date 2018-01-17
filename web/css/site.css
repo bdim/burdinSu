@@ -1,0 +1,199 @@
+html,
+body {
+    height: 100%;
+}
+
+.wrap {
+    min-height: 100%;
+    height: auto;
+    margin: 0 auto -60px;
+    padding: 0 0 60px;
+}
+
+.wrap > .container {
+    padding: 70px 15px 20px;
+}
+
+.footer {
+    height: 60px;
+    background-color: #f5f5f5;
+    border-top: 1px solid #ddd;
+    padding-top: 20px;
+}
+
+.jumbotron {
+    text-align: center;
+    background-color: transparent;
+}
+
+.jumbotron .btn {
+    font-size: 21px;
+    padding: 14px 24px;
+}
+
+.not-set {
+    color: #c55;
+    font-style: italic;
+}
+
+/* add sorting icons to gridview sort links */
+a.asc:after, a.desc:after {
+    position: relative;
+    top: 1px;
+    display: inline-block;
+    font-family: 'Glyphicons Halflings';
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1;
+    padding-left: 5px;
+}
+
+a.asc:after {
+    content: /*"\e113"*/ "\e151";
+}
+
+a.desc:after {
+    content: /*"\e114"*/ "\e152";
+}
+
+.sort-numerical a.asc:after {
+    content: "\e153";
+}
+
+.sort-numerical a.desc:after {
+    content: "\e154";
+}
+
+.sort-ordinal a.asc:after {
+    content: "\e155";
+}
+
+.sort-ordinal a.desc:after {
+    content: "\e156";
+}
+
+.grid-view th {
+    white-space: nowrap;
+}
+
+.hint-block {
+    display: block;
+    margin-top: 5px;
+    color: #999;
+}
+
+.error-summary {
+    color: #a94442;
+    background: #fdf7f7;
+    border-left: 3px solid #eed3d7;
+    padding: 10px 20px;
+    margin: 0 0 15px 0;
+}
+
+/* align the logout "link" (button in form) of the navbar */
+.nav li > form > button.logout {
+    padding: 15px;
+    border: none;
+}
+
+@media(max-width:767px) {
+    .nav li > form > button.logout {
+        display:block;
+        text-align: left;
+        width: 100%;
+        padding: 10px 15px;
+    }
+}
+
+.nav > li > form > button.logout:focus,
+.nav > li > form > button.logout:hover {
+    text-decoration: none;
+}
+
+.nav > li > form > button.logout:focus {
+    outline: none;
+}
+
+.navbar-inverse {
+    background-color: #006DA9;
+}
+.user-name{
+    font-weight: bold;
+}
+
+/* site */
+a {cursor: pointer;}
+.m20{
+    margin: 20px;
+}
+.mt20{
+    margin-top: 20px;
+}
+.pt20 {
+    padding-top: 20px;
+}
+a.link-{
+    text-decoration: none !important;
+}
+a.link-:hover{
+    opacity: 0.6;
+    text-decoration: none !important;
+}
+/* blog */
+
+.blog_item_media {
+    min-height: 20px;
+    position: relative;
+}
+.blog_media_edit {
+    position: absolute;
+    top: -38px;
+    right: 3px;
+    background-image: url(/icon/pen.png);
+    width: 32px;
+    height: 32px;
+    z-index: 1;
+    opacity: 0.3;
+    cursor: pointer;
+}
+.blog_media_edit:hover{
+    opacity: 1;
+}
+.filter-form{
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+}
+.ug-textpanel-bg {
+    opacity: 0 !important;
+}
+.blog_item {
+    margin-top: 20px;
+    background-color: #daecf5;
+    box-shadow: 0 0 10px #666;
+}
+.event_body_item{
+    background-color: #fdf4f7;
+}
+.blog_item_title {
+    font-weight: bold;
+}
+.blog_item_one_title{
+    color: #DD1144;
+    display: block;
+}
+.blog_item_one_taxonomy {
+    color: #006DA9;
+}
+.editable-input textarea{
+    min-width: 500px;
+}
+.blog_item_one_body a{
+    cursor: pointer !important;
+    color : black !important;
+}
+.blog_item_age {
+    font-weight: normal;
+    color: #999;
+    font-size: 0.8em;
+}
