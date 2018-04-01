@@ -18,6 +18,7 @@ echo GridView::widget([
         //['class' => 'yii\grid\SerialColumn'],
         'id',
         [
+            'attribute' => 'date_start',
             'label' => 'Дата начала',
             'format' => 'raw',
             'value' => function($data){
@@ -38,6 +39,7 @@ echo GridView::widget([
                 ]);
             },
         ],[
+            'attribute' => 'date_end',
             'label' => 'Дата конца',
             'format' => 'raw',
             'value' => function($data){
@@ -58,6 +60,7 @@ echo GridView::widget([
                 ]);
             },
         ],[
+            'attribute' => 'publish_date',
             'label' => 'Дата публикации',
             'format' => 'raw',
             'value' => function($data){
@@ -78,6 +81,8 @@ echo GridView::widget([
                 ]);
             },
         ],[
+            'attribute' => 'title',
+            'options' => ['max-height' => '300px'],
             'label' => 'Заголовок',
             'format' => 'raw',
             'value' => function($data){
@@ -95,10 +100,27 @@ echo GridView::widget([
                 ]);
             },
         ],[
-            'label' => 'Текст',
+            'label' => 'Тизер',
             'format' => 'raw',
             'value' => function($data){
                 return Editable::widget( [
+                    'model' => $data,
+                    'attribute' => 'teaser',
+                    'url' => 'event/update',
+                    'type' => 'wysihtml5',
+                    'clientOptions' => [
+                        'showbuttons' => 'bottom',
+                        'emptytext' => 'Текст',
+                    ]
+                ]);
+            },
+        ],[
+            'label' => 'Текст',
+            'format' => 'raw',
+            'value' => function($data){
+                return
+                    '<a onclick="$(\'#spoiler'.$data->id.'\').toggle();" href="javascript://">Свернуть/Развернуть</a><div style="display:none;" id="spoiler'.$data->id.'">'.
+                    Editable::widget( [
                     'model' => $data,
                     'attribute' => 'body',
                     'url' => 'event/update',
@@ -107,7 +129,7 @@ echo GridView::widget([
                         'showbuttons' => 'bottom',
                         'emptytext' => 'Текст',
                     ]
-                ]);
+                ]) . '</div>';
             },
         ],
 

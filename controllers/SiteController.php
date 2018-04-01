@@ -2,7 +2,9 @@
 
 namespace app\controllers;
 
+use app\components\RenderCache;
 use app\models\Blog;
+use app\models\Event;
 use app\models\Log;
 use app\models\Taxonomy;
 use app\models\TelegramBot;
@@ -112,7 +114,7 @@ class SiteController extends Controller
 
     public function actionTelegramCode(){
         $code = rand(100,999);
-        Yii::$app->cache->set("telegram-login-".$code, -1 , 60);
+        Yii::$app->cache->set(RenderCache::cacheId("telegram-login-".$code), -1 , 60);
         $bot = new TelegramBot();
         $bot->executeCommands([TelegramBot::COMMAND_LOGIN]);
 
@@ -121,7 +123,7 @@ class SiteController extends Controller
     public function actionTelegramLogin($code){
         $login = false;
         while (!$login) {
-            $c = Yii::$app->cache->get("telegram-login-".$code);
+            $c = Yii::$app->cache->get(RenderCache::cacheId("telegram-login-".$code));
             if (intval($c) > 0){
                 $user = User::findById(intval($c));
                 if (!empty($user))
@@ -241,8 +243,8 @@ class SiteController extends Controller
 
     public function actionImportfoto(){
         if (!Yii::$app->user->isGuest) {
-            $format = null;
-            /*$format = [
+            //$format = null;
+            $format = [
                 'pattern' => "/([0-9]{4})-([0-9]{2})-([0-9]{2})_([0-9]{2})-([0-9]{2})-([0-9]{2})/",
                 'date' => [
                     'y' =>1,
@@ -253,7 +255,7 @@ class SiteController extends Controller
                     's' =>6
                 ]
 
-            ];*/
+            ];
             Files::importFilesFromFolder('photo_jpg',Files::TYPE_PHOTO, true, $format);
             Blog::flushCache();
             echo 'ok';
@@ -298,7 +300,16 @@ class SiteController extends Controller
         if (!Yii::$app->user->isGuest) {
             Blog::clear();
             Blog::flushCache();
+            Event::flushCache();
             echo 'Flushblog';
         }
     }
+
+    public function actionFlushcache(){
+        if (!Yii::$app->user->isGuest) {
+            \Yii::$app->cache->flush();
+        }
+    }
+
+
 }

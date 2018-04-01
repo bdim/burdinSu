@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\Blog;
+use app\models\Files;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\data\ArrayDataProvider;
@@ -31,7 +32,7 @@ class EventController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['list','update','add','delete'],
+                        'actions' => ['album','list','update','add','delete'],
                         'allow' => true,
                         'roles' => ['@'],
                         'matchCallback' => function ($rule, $action) {
@@ -72,7 +73,7 @@ class EventController extends Controller
     }
 
     public function actionList(){
-        $query = Event::find()->orderBy("id DESC");
+        $query = Event::find();
 
         $provider = new ActiveDataProvider([
             'query' => $query,
@@ -81,13 +82,14 @@ class EventController extends Controller
             ],
             'sort' => [
                 'attributes' => [
+                    'publish_date',
                     'id',
                     'date_start',
                     'date_end',
-                    'publish_date',
+                    'title',
                 ],
                 'defaultOrder' => [
-                    'id' => SORT_DESC,
+                    'publish_date' => SORT_DESC,
                 ]
             ],
         ]);

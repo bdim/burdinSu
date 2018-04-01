@@ -32,7 +32,7 @@ AngularAsset::register($this);
 <div class="wrap">
     <?php
 NavBar::begin([
-    'brandLabel' => 'Сенькин сайт',
+    'brandLabel' => 'Дмитрий Бурдин',
     'brandUrl' => Yii::$app->homeUrl,
     'options' => [
         'class' => 'navbar-inverse navbar-fixed-top',

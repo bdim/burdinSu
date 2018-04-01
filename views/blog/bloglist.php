@@ -21,7 +21,7 @@ $tags = Taxonomy::getVocabularyTags(Taxonomy::VID_BLOG_TAG);
             <option value="">-</option>
             <?
             $selected = intval(Yii::$app->request->get('year'));
-            $years = array_reverse(range(2012, date("Y")));
+            $years = array_reverse(range(1993, date("Y")));
             foreach ($years as $year){?>
                 <option value="<?=$year?>" <?= ($selected == $year) ? 'selected' : ''?> ><?=$year?></option>
             <?}?>
@@ -60,6 +60,7 @@ $tags = Taxonomy::getVocabularyTags(Taxonomy::VID_BLOG_TAG);
     </form>
 </div>
 <?
+
 echo ListView::widget([
         'dataProvider' => $dataProvider,
         'itemView' => '_list',

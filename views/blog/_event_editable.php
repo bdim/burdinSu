@@ -9,25 +9,25 @@ use app\components\StringUtils;
 $form = ActiveForm::begin(['id' => 'form-body-'.$data->id, 'fieldConfig' => ['template' => "{input}"]]);
 
 ?>
-<div><span class="blog_item_one_taxonomy"
-        ><?
+    <div><span class="blog_item_one_taxonomy"
+    ><?
 
         $tags = Taxonomy::getVocabularyTags(Taxonomy::VID_BLOG_TAG);
         $source = [];
         foreach  ($tags as $tag)
             $source[] = [
-                'value' => $tag->tid,
+                'value' => $tag->tid.':'.Taxonomy::VID_BLOG_TAG,
                 'text'  => StringUtils::mb_ucfirst($tag->name)
             ];
         $source[] = [
-            'value' => 0,
+            'value' => '0'.':'.Taxonomy::VID_BLOG_TAG,
             'text'  => '-пусто-'
         ];
 
         echo $form->field($data, 'tag')->widget(Editable::className(), [
             'url' => $controller.'/update',
             'type' => 'checklist',
-            'value' =>  implode(", ",$data->tagNames),
+            'value' =>  implode(", ",$data->getTagNames(Taxonomy::VID_BLOG_TAG)),
             //'mode' => 'pop',
             'clientOptions' => [
                 'label' => 'Теги',
@@ -37,24 +37,40 @@ $form = ActiveForm::begin(['id' => 'form-body-'.$data->id, 'fieldConfig' => ['te
             ]
         ]);
 
-        ?></span><span class="blog_item_one_title"><?
+        ?></span><span class="blog_item_one_taxonomy"
+    ><?
 
-        echo $form->field($data, 'title')->widget(Editable::className(), [
+        $tags = Taxonomy::getVocabularyTags(Taxonomy::VID_THEME);
+        $source = [];
+        foreach  ($tags as $tag)
+            $source[] = [
+                'value' => $tag->tid.':'.Taxonomy::VID_THEME,
+                'text'  => StringUtils::mb_ucfirst($tag->name)
+            ];
+        $source[] = [
+            'value' => '0'.':'.Taxonomy::VID_THEME,
+            'text'  => '-пусто-'
+        ];
+
+        echo $form->field($data, 'tag')->widget(Editable::className(), [
             'url' => $controller.'/update',
-            'type' => 'text',
-            'mode' => 'pop',
+            'type' => 'checklist',
+            'value' =>  implode(", ",$data->getTagNames(Taxonomy::VID_THEME)),
+            //'mode' => 'pop',
             'clientOptions' => [
-                'emptytext' => 'Заголовок',
-                'placeholder' => 'Заголовок ...'
+                'label' => 'Тематика',
+                'emptytext' => 'Тематика',
+                'value' =>  \yii\helpers\Json::encode($data->tag),
+                'source' =>  $source,
             ]
         ]);
 
-?></span></div>
+        ?></span>
 
 <div class="blog_item_one_body">
     <?
     if (Yii::$app->params['devicedetect']['isDesktop']){
-        echo $form->field($data, 'body')->widget(Editable::className(), [
+        echo $form->field($data, 'teaser')->widget(Editable::className(), [
             'url' => $controller.'/update',
             'type' => 'wysihtml5',
             'clientOptions' => [
@@ -62,7 +78,7 @@ $form = ActiveForm::begin(['id' => 'form-body-'.$data->id, 'fieldConfig' => ['te
             ]
         ]);
     } else {
-        echo $form->field($data, 'body')->widget(Editable::className(), [
+        echo $form->field($data, 'teaser')->widget(Editable::className(), [
             'url' => $controller.'/update',
             'type' => 'textarea',
             'mode' => 'pop',

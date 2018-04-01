@@ -14,8 +14,8 @@ class m171107_110050_events extends Migration
             `publish_date` datetime NOT NULL,
             `user_id`  VARCHAR(255) NOT NULL DEFAULT 0,
             `title` text NOT NULL,
-            `body` text NOT NULL,
-            `post_text` text NOT NULL,
+            `body` LONGTEXT NOT NULL,
+            `teaser` text NOT NULL,
 
               PRIMARY KEY (`id`),
               KEY `publish_date` (`publish_date`),

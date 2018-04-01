@@ -29,7 +29,7 @@ AppAsset::register($this);
 <div class="wrap">
     <?php
 NavBar::begin([
-    'brandLabel' => 'Сенькин сайт',
+    'brandLabel' => 'Дмитрий Бурдин',
     'brandUrl' => Yii::$app->homeUrl,
     'options' => [
         'class' => 'navbar-inverse navbar-fixed-top',
@@ -55,8 +55,10 @@ if (Yii::$app->user->isGuest) {
             'label' => 'Admin',
             'items' => [
                 ['label' => 'Пользователи', 'url' => ['/user/list']],
-                ['label' => 'События', 'url' => ['/event/list']]
-
+                ['label' => 'События', 'url' => ['/event/list']],
+                ['label' => 'Сброс кеша блога', 'url' => ['/site/flushblog']],
+                ['label' => 'Сброс кеша', 'url' => ['/site/flushcache']],
+                ['label' => 'Импорт фото', 'url' => ['/site/importfoto']],
             ],
         ];
     }
