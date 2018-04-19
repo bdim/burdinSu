@@ -28,8 +28,14 @@
         const TYPE_PHOTO = 1;
         const TYPE_AUDIO = 2;
         const TYPE_VIDEO = 3;
+        const TYPE_DOC   = 4;
+
+        const TYPE_URL   = 11;
+        const TYPE_YANDEX_VIDEO   = 13;
+
 
         public $pub_date;
+        public $z_file;
 
         protected $_params;
 
@@ -57,6 +63,7 @@
                 ['caption' , 'string'],
                 ['params' , 'string'],
                 ['date_id', 'safe' ],
+                ['z_file', 'safe' ],
             ];
         }
 
@@ -136,22 +143,24 @@
             $type = $params['type_id'];
             $path = $params['path'];
 
-            try {
-                if (!$info = getimagesize(UPLOAD_PATH . '/' . $path))
+            if ($type == Files::TYPE_PHOTO){
+                try {
+                    if (!$info = getimagesize(UPLOAD_PATH . '/' . $path))
+                        return false;
+
+                    // превьюхи отсекаем
+                    if ($info[0] < 350 && $info[1] < 350)
+                        return false;
+
+                } catch (\Exception $e) {
+                    Log::add([
+                        'message' => 'Size error: '.$path.'; '.$e->getMessage(),
+                        'context' => 'Files::add'
+                    ]);
+                    static::renameFile(UPLOAD_PATH . '/' . $path, UPLOAD_PATH . '/errorFiles/' . $path);
+
                     return false;
-
-                // превьюхи отсекаем
-                if ($info[0] < 350 && $info[1] < 350)
-                    return false;
-
-            } catch (\Exception $e) {
-                Log::add([
-                    'message' => 'Size error: '.$path.'; '.$e->getMessage(),
-                    'context' => 'Files::add'
-                ]);
-                static::renameFile(UPLOAD_PATH . '/' . $path, UPLOAD_PATH . '/errorFiles/' . $path);
-
-                return false;
+                }
             }
 
 

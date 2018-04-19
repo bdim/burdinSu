@@ -7,8 +7,11 @@ use dosamigos\editable\Editable;
 $this->title = 'События';
 $this->params['breadcrumbs'][] = $this->title;
 
+
 echo Html::a('Добавить',Url::to(['event/add']));
 echo '<br><br>';
+
+\yii\widgets\Pjax::begin(['id' => 'model-grid', 'enablePushState' => false]);
 echo GridView::widget([
     'dataProvider' => $dataProvider,
     'options' => [
@@ -17,7 +20,7 @@ echo GridView::widget([
     'columns' => [
         //['class' => 'yii\grid\SerialColumn'],
         'id',
-        [
+         [
             'label' => 'Дата начала',
             'format' => 'raw',
             'value' => function($data){
@@ -109,11 +112,33 @@ echo GridView::widget([
                     ]
                 ]);
             },
+        ],[
+            'label' => 'Доп.медиа',
+            'format' => 'raw',
+            'value' => function($data){
+                return \app\widgets\AttachWidget::widget( [
+                    'model' => $data,
+                ]);
+            },
         ],
-
-        ['class' => 'yii\grid\ActionColumn','template' => ' {delete}'],
+        [
+            'class' => 'yii\grid\ActionColumn',
+            'template' => '{delete}',
+            'contentOptions' => ['class' => 'action-column'],
+            'buttons' => [
+                'delete' => function ($url, $model, $key) {
+                    return Html::a('<span class="glyphicon glyphicon-trash"></span>', $url, [
+                        'title' => Yii::t('yii', 'Delete'),
+                        'data-pjax' => '#model-grid',
+                    ]);
+                },
+            ],
+        ],
+        //['class' => 'yii\grid\ActionColumn','template' => ' {delete}'],
     ],
 ]);
+
+\yii\widgets\Pjax::end();
 ?>
 <style>
     .event-list {

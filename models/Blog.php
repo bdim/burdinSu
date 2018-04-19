@@ -27,7 +27,7 @@
     class Blog extends ActiveRecord
     {
 
-        public $pub_date;
+        //public $pub_date;
 
 
         const CACHE_DEPENDENCY_KEY = 'blog';

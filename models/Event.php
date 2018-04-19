@@ -20,7 +20,13 @@
     class Event extends ActiveRecord
     {
 
-        public $pub_date;
+       // public $pub_date;
+
+        /**
+         * внешняя ссылка на видео
+         */
+        public $ext_video;
+
 
         /**
          * @inheritdoc

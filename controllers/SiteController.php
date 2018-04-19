@@ -14,6 +14,7 @@ use yii\filters\AccessControl;
 use yii\helpers\Json;
 use yii\helpers\VarDumper;
 use yii\web\Controller;
+use yii\web\Request;
 use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
@@ -23,6 +24,7 @@ use app\models\Files;
 use app\models\SignupForm;
 use yii\helpers\Url;
 use app\components\VarDump;
+use yii\web\UploadedFile;
 
 
 class SiteController extends Controller
@@ -300,5 +302,28 @@ class SiteController extends Controller
             Blog::flushCache();
             echo 'Flushblog';
         }
+    }
+
+    public function actionAttachfile(){
+
+        $attach = new Files();
+
+        $z_file = UploadedFile::getInstance($attach, 'z_file');
+        $attach->load(Yii::$app->request->post());
+
+        if (!empty($z_file)){
+
+            $r_path = 'doc' . '/' . $attach->event_id . '_' .$z_file->name;
+
+            $path = UPLOAD_PATH . '/' . $r_path;
+            $z_file->saveAs($path);
+
+            $params['type_id'] = Files::TYPE_DOC;
+            $params['path']    = $r_path;
+            $params['event_id'] = $attach->event_id;
+
+            Files::add($params);
+        }
+
     }
 }
