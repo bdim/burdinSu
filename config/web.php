@@ -53,7 +53,9 @@ $config = [
                 '<controller:[\w-]+>' => '<controller>/index',
 
                 //'<action:[\w-]+>' => 'site/<action>',
+                '<controller:[\w-]+>/<action:[\w-]+>/<id:\d+>' => '<controller>/<action>',
                 '<controller:[\w-]+>/<action:[\w-]+>' => '<controller>/<action>',
+
 
                 '<module:[\w-]+>/<controler:[\w-]+>/<id:\d+>' => '<module>/<controller>/index',
                 '<module:[\w-]+>/<controller:[\w-]+>/<action:[\w-]+>/<id:\d+>' => '<module>/<controller>/<action>',

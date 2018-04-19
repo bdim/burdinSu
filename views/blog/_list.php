@@ -41,9 +41,9 @@ use app\components\DateUtils;
     }
 
     /* медиа */
-    if (!empty($files)){
+/*    if (!empty($files)){
         $out['media'] = $this->context->renderPartial('_media',['data' => $files, 'show_date' => false, 'pub_date' => $model['pub_date']]);
-    }
+    }*/
 
 
     /* события показываем отдельно */
@@ -52,46 +52,94 @@ use app\components\DateUtils;
 
             $tags = $tags + $item->tagsIds;
 
-            $out['event'][$item->id]['title'] = Yii::$app->formatter->asDate($item['date_start'],'php:d.m.Y l') .
-                ( $item['date_start'] != $item['date_end'] ? " - ". Yii::$app->formatter->asDate($item['date_end'],'php:d.m.Y l') : '');
+            $out['event'][$item->id]['title'] = Yii::$app->formatter->asDate($item['date_start'],'php:d.m.Y l')
+                . ( $item['date_start'] != $item['date_end'] ? " - ". Yii::$app->formatter->asDate($item['date_end'],'php:d.m.Y l') : '')
+                . ', <h3>'.$item['title'] .'</h3>';
+            ;
 
             if (User::isUserEditor())
-                $out['event'][$item->id]['body'] .= $this->context->renderPartial('_event_editable',['data' => $item, 'controller' => 'event']);
+                $out['event'][$item->id]['teaser'] .= $this->context->renderPartial('_event_editable',['data' => $item, 'controller' => 'event']);
             else
-                $out['event'][$item->id]['body'] .= $this->context->renderPartial('_event',['data' => $item]);
+                $out['event'][$item->id]['teaser'] .= $this->context->renderPartial('_event',['data' => $item]);
 
-            $files = Files::getItemsForEvent($item->id);
+            $out['event'][$item->id]['body'] = $item['body'];
+
+/*            $files = Files::getItemsForEvent($item->id);
             if (!empty($files)){
                 $out['event'][$item->id]['media'] = $this->context->renderPartial('_media',['data' => $files, 'show_date' => true, 'event_id' => $item->id]);
-            }
+            }*/
         }
 
-    // возраст
-    $age = [];
-    if (in_array(\app\models\Taxonomy::TAG_ARSENY, $tags)){
-        $age[] = "Арсений - ".DateUtils::age("2012-05-12", $model['pub_date'], true);
-    }
-    if (in_array(\app\models\Taxonomy::TAG_YAROSLAV, $tags)){
-        $age[] = "Ярослав - ".DateUtils::age("2016-08-18", $model['pub_date'], true);
-    }
 ?>
 
 <? if (!empty($out['body']) || !empty($out['media'])){ ?>
 <div class="blog_item" id="blog-<?= $model['pub_date'] ?>">
     <div class="blog_item_title m20 pt20"><a class="link-" href="/blog#blog-<?= $model['pub_date'] ?>"><?= Yii::$app->formatter->asDate($model['pub_date'],'php:d.m.Y l') ?></a>
         <?= !empty($age) ? '<span class="blog_item_age">('.implode(", ", $age).')</span>' : '';?></div>
-    <div class="blog_item_body m20 "><?= $out['body'];?></div>
-    <div class="blog_item_media"><?= $out['media'] ?></div>
+    <div class="blog_item_body"><?
+
+        $items = [
+            [
+                'label'=>'<i class="glyphicon glyphicon-home"></i> Инфо',
+                'content'=>$out['body'],
+                'active'=>true
+            ],
+            [
+                'label'=>'<i class="glyphicon glyphicon-user"></i> Альбом',
+                'content'=>'загрузка...',
+                'linkOptions'=>['data-url'=>\yii\helpers\Url::to(['/blog/blogalbum?pub_date='.$model['pub_date']])]
+            ]
+        ];
+
+        // Above
+        echo \kartik\tabs\TabsX::widget([
+            'items'=>$items,
+            'position'=>\kartik\tabs\TabsX::POS_ABOVE,
+            'encodeLabels'=>false
+        ]);
+
+
+        ?></div>
+    <!--<div class="blog_item_media"><?/*= $out['media'] */?></div>-->
 </div>
 <hr>
 <?}?>
 
 <? if (!empty($out['event']))
-    foreach ($out['event'] as $eventOut){?>
+    foreach ($out['event'] as $id => $eventOut){?>
 <div class="blog_item event_body_item"  id="event-<?= $model['pub_date'] ?>">
     <div class="blog_item_title m20 pt20"><a class="link-" href="/blog#event-<?= $model['pub_date'] ?>"><?= $eventOut['title'];?></a></div>
-    <div class="blog_item_body m20 "><?= $eventOut['body'];?></div>
-    <div class="blog_item_media"><?= $eventOut['media'] ?></div>
+    <div class="blog_item_body">
+        <?
+        $items = [
+            [
+                'label'=>'<i class="glyphicon glyphicon-home"></i> Инфо',
+                'content'=>$eventOut['teaser'],
+                'active'=>true
+            ],
+            [
+                'label'=>'<i class="glyphicon glyphicon-user"></i> Альбом',
+                'content'=>'загрузка...',
+                'linkOptions'=>['data-url'=>\yii\helpers\Url::to(['/blog/eventalbum/'.$id])]
+            ],
+        ];
+        if (!empty($eventOut['body']))
+            $items [] = [
+                'label'=>'<i class="glyphicon glyphicon-home"></i> Описание',
+                'content'=>$eventOut['body'],
+            ];
+
+        // Above
+        echo \kartik\tabs\TabsX::widget([
+            'items'=>$items,
+            'position'=>\kartik\tabs\TabsX::POS_RIGHT,
+            'encodeLabels'=>false
+        ]);
+
+        ?>
+
+        </div>
+    <!--<div class="blog_item_media"><?/*= $eventOut['media'] */?></div>-->
 </div>
     <hr>
 <?}?>

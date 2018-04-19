@@ -1,6 +1,7 @@
 <?php     	
     namespace app\models;
      
+    use app\components\RenderCache;
     use Yii;
     use yii\base\NotSupportedException;
     use yii\behaviors\TimestampBehavior;
@@ -97,7 +98,7 @@
 
             $article->setAttributes($attributes);
             if ($article->save()){
-                $article->addKeywords($keywords);
+                $article->attachTag($keywords);
                 return $article->id;
             }
         }
@@ -114,7 +115,7 @@
 
 
         public static function getItemsForDay($date){
-            $article = Yii::$app->cache->getOrSet('article-for-date-'.$date, function() use ($date) {
+            $article = Yii::$app->cache->getOrSet(RenderCache::cacheId('article-for-date-'.$date), function() use ($date) {
                 $query = Article::find()->where('DATE(`publish_date`) = :date' , [':date' => $date])->orderBy('publish_date')->all();
                 return $query;
             } ,3600*24, static::getCacheDependency());
@@ -124,17 +125,17 @@
 
         /* кеш */
         public static function getCacheDependency(){
-            return new TagDependency(['tags' => static::CACHE_DEPENDENCY_KEY]);
+            return RenderCache::getCacheDependency(static::CACHE_DEPENDENCY_KEY);
         }
 
         public static function flushCache(){
-            TagDependency::invalidate(Yii::$app->cache, static::CACHE_DEPENDENCY_KEY);
+            RenderCache::flushCache(static::CACHE_DEPENDENCY_KEY);
         }
 
         /* массив дат с сообщениями и/или фотками */
         public static function getDates(){
 
-            $dates = Yii::$app->cache->getOrSet('article-dates',function() {
+            $dates = Yii::$app->cache->getOrSet(RenderCache::cacheId('article-dates'),function() {
                 $query = Article::find()->select('DATE(`publish_date`) as pub_date')->groupBy('pub_date')->all();
                 $dates = [];
                 foreach ($query as $q) {

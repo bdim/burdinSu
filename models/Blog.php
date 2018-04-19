@@ -1,6 +1,7 @@
 <?php     	
     namespace app\models;
      
+    use app\components\RenderCache;
     use Yii;
     use yii\base\NotSupportedException;
     use yii\behaviors\TimestampBehavior;
@@ -109,7 +110,7 @@
 
             $blog->setAttributes($attributes);
             if ($blog->save()){
-                $blog->addKeywords($keywords);
+                $blog->attachTag($keywords);
                 return $blog->id;
             }
         }
@@ -130,7 +131,7 @@
         }
 
         public static function getItemsForDay($date){
-            $blog = Yii::$app->cache->getOrSet('blog-for-date-'.$date, function() use ($date) {
+            $blog = Yii::$app->cache->getOrSet(RenderCache::cacheId('blog-for-date-'.$date), function() use ($date) {
                 $query = Blog::find()->where('DATE(`publish_date`) = :date' , [':date' => $date])->orderBy('publish_date')->all();
                 return $query;
             } ,3600*24, static::getCacheDependency());
@@ -139,7 +140,7 @@
         }
 
         public static function getLastDate(){
-            $blog = Yii::$app->cache->getOrSet('blog-last-date-', function() {
+            $blog = Yii::$app->cache->getOrSet(RenderCache::cacheId('blog-last-date-'), function() {
                 $query = Blog::find()->orderBy('publish_date DESC')->one();
                 return $query;
             } ,3600*24, static::getCacheDependency());
@@ -149,17 +150,17 @@
 
         /* кеш */
         public static function getCacheDependency(){
-            return new TagDependency(['tags' => static::CACHE_DEPENDENCY_KEY]);
+            return RenderCache::getCacheDependency(static::CACHE_DEPENDENCY_KEY);
         }
 
         public static function flushCache(){
-            TagDependency::invalidate(Yii::$app->cache, static::CACHE_DEPENDENCY_KEY);
+            RenderCache::flushCache(static::CACHE_DEPENDENCY_KEY);
         }
 
         /* массив дат с сообщениями и/или фотками */
         public static function getDates($filter=[]){
 
-            $dates = Yii::$app->cache->getOrSet('blog-dates'.json_encode($filter),function() use ($filter) {
+            $dates = Yii::$app->cache->getOrSet(RenderCache::cacheId('blog-dates').json_encode($filter),function() use ($filter) {
                 $blogIds = [];
                 $dates = [];
                 $in = 'IN';
@@ -231,7 +232,7 @@
                                 if ($q->event_id == 0 && empty($textDates[$q->pub_date]))
                                     $notagsDates[$q->pub_date] = ['pub_date' => $q->pub_date, 'files' => true];
 
-                            } else
+                            } elseif ($q->event_id == 0)
                                 $dates[$q->pub_date] = ['pub_date' => $q->pub_date, 'files' => true];
                         }
                     }

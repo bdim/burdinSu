@@ -1,6 +1,7 @@
 <?php     	
     namespace app\models;
      
+    use app\components\RenderCache;
     use app\components\StringUtils;
     use app\components\TaxonomyBehavior;
     use Yii;
@@ -43,7 +44,7 @@
         public function rules()
         {
             return [
-                [['date_start', 'date_end', 'publish_date', 'user_id', 'title', 'body', 'post_text'], 'safe' ],
+                [['date_start', 'date_end', 'publish_date', 'user_id', 'title', 'body', 'teaser'], 'safe' ],
             ];
         }
 
@@ -87,7 +88,7 @@
         }
 
         public function getMessage(){
-            $message = $this->post_text ? 'Привет! '.$this->post_text.'. ' : '';
+            $message = $this->teaser ? 'Привет! '.$this->teaser.'. ' : '';
             return $message;
         }
 
@@ -99,15 +100,15 @@
 
         /* кеш */
         public static function getCacheDependency(){
-            return new TagDependency(['tags' => Blog::CACHE_DEPENDENCY_KEY]);
+            return RenderCache::getCacheDependency('event');
         }
 
         public static function flushCache(){
-            TagDependency::invalidate(Yii::$app->cache, Blog::CACHE_DEPENDENCY_KEY);
+            RenderCache::flushCache('event');
         }
 
         public static function getItemsForDay($date){
-            $items = Yii::$app->cache->getOrSet('event-for-date-'.$date, function() use ($date) {
+            $items = Yii::$app->cache->getOrSet(RenderCache::cacheId('event-for-date-'.$date), function() use ($date) {
                 $query = Event::find()->where('DATE(`publish_date`) = :date' , [':date' => $date])->orderBy('publish_date')->all();
                 return $query;
             } ,3600*24, static::getCacheDependency());

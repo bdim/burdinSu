@@ -27,7 +27,7 @@ $this->params['breadcrumbs'][] = $this->title;
             url: '/site/telegram-code',
             success: function (code) {
                 $(".login-switch").hide();
-                $(".site-login-telegram").html("Введите в <strong>Сенькин бот</strong> в Telegram этот код: <strong style='color: #e96200;'>"+code+"</strong>");
+                $(".site-login-telegram").html("Введите в <strong>бот</strong> в Telegram этот код: <strong style='color: #e96200;'>"+code+"</strong>");
 
                 time = $('.seconds');
                 $(".timer").show();

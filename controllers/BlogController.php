@@ -10,6 +10,7 @@ use yii\data\ActiveDataProvider;
 use yii\data\ArrayDataProvider;
 use yii\debug\models\timeline\DataProvider;
 use yii\filters\AccessControl;
+use yii\helpers\Json;
 use yii\helpers\VarDumper;
 use yii\web\Controller;
 use yii\web\Response;
@@ -34,7 +35,7 @@ class BlogController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['index'],
+                        'actions' => ['index','eventalbum','blogalbum'],
                         'allow' => true,
                         'roles' => ['@']
                     ],
@@ -150,4 +151,19 @@ class BlogController extends Controller
             'model'        => $dates,
         ]);
     }
+
+    public function actionEventalbum($id){
+
+        $files = Files::getItemsForEvent($id);
+        $html =  $this->renderAjax('_media',['data' => $files, 'show_date' => true, 'event_id' => $id]);
+        return Json::encode($html);
+    }
+
+    public function actionBlogalbum(){
+
+        $files = Files::getItemsForDay($_REQUEST['pub_date']);
+        $html =  $this->renderAjax('_media',['data' => $files, 'show_date' => false, 'pub_date' => $_REQUEST['pub_date']]);
+        return Json::encode($html);
+    }
+
 }

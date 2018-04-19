@@ -7,20 +7,24 @@ use app\models\Files;
 if (!empty($data) && (!empty($pub_date) || !empty($event_id)) && \app\models\User::isUserEditor()){?>
   <a class="blog_media_edit" title="подписать эти фото" href="/files?<?= $event_id ? "event_id=".$event_id : "date_id=".$pub_date; ?>" target="_blank"></a>
 <?}
+    $limit = 3;
+    $i = 0;
     foreach($data as $file){
+        /*if ($i == $limit)
+            break;*/
         if ($file->type_id == Files::TYPE_PHOTO){
-            /*$photos[] = [
+            $photos[] = [
                 'thumb' => Files::thumb(UPLOAD_PATH.'/'.$file->path, 150),
                 'src'   => UPLOAD_WWW.'/'.$file->path,
                 'description' => ($show_date ? Yii::$app->formatter->asDate($file->date_id)." " : '').($file->caption ? $file->caption : ''),
-            ];*/
-            $photos[] =
+            ];
+            /*$photos[] =
                 [
                     'title' => ($show_date ? Yii::$app->formatter->asDate($file->date_id)." " : '').($file->caption ? $file->caption : ''),
                     'href' => UPLOAD_WWW.'/'.$file->path,
                     'type' => 'text/html',
-                    /*'poster' => 'http://media.w3.org/2010/05/sintel/poster.png'*/
-                ];
+                    //'poster' => 'http://media.w3.org/2010/05/sintel/poster.png'
+                ];*/
         }
 
 
@@ -30,16 +34,18 @@ if (!empty($data) && (!empty($pub_date) || !empty($event_id)) && \app\models\Use
                 'type' => $file->param['mime-type']
             ];
         }
-
+        $i++;
     }
 
     if (!empty($photos)){
-        /*echo  \diplodok\Gallerywidget\GalleryWidget::widget([
+        echo '<div id="album-'.$event_id.'">';
+        echo  \diplodok\Gallerywidget\GalleryWidget::widget([
             //'title_gallery' => 'Заголовок', // опция
-            'theme' => 'default', // опция (по умолчанию тема grid) grid, tiles, tilesgrid, slider, default, compact, carousel
+            //'theme' => 'default', // опция (по умолчанию тема grid) grid, tiles, tilesgrid, slider, default, compact, carousel
             'photos' => $photos
-        ]);*/
-        $gid = md5(uniqid().microtime(). rand(0, time()));
+        ]);
+        echo '</div>';
+        /*$gid = md5(uniqid().microtime(). rand(0, time()));
         echo dosamigos\gallery\Carousel::widget([
             'items' => $photos,
             'json' => true,
@@ -57,7 +63,7 @@ if (!empty($data) && (!empty($pub_date) || !empty($event_id)) && \app\models\Use
                 'id'=>'gallery_'.$gid,
 
             ],
-        ]);
+        ]);*/
     }
 
     if (!empty($audios)){
@@ -77,3 +83,12 @@ if (!empty($data) && (!empty($pub_date) || !empty($event_id)) && \app\models\Use
         ]);
     }
  ?>
+
+<!--<script>
+    $(function () {
+        var ob =$('#album-<?/*=$event_id*/?>').parents('.tab-content').find('.ug-gallery-wrapper');
+        var id = ob.prop('id');
+        $("#"+id).css('max-width', 1200);
+    })
+
+</script>-->
