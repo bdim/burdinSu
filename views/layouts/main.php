@@ -49,14 +49,15 @@ if (Yii::$app->user->isGuest) {
 
     $menuItems[] = ['label' => 'Блог', 'url' => ['/blog']];
     $menuItems[] = ['label' => 'Хрон', 'url' => ['/blog/comparison']];
-    $menuItems[] = ['label' => 'Статьи', 'url' => ['/article']];
     if (User::isUserAdmin()){
         $menuItems[] = [
             'label' => 'Admin',
             'items' => [
                 ['label' => 'Пользователи', 'url' => ['/user/list']],
                 ['label' => 'События', 'url' => ['/event/list']],
-                ['label' => 'Сброс кеша блога', 'url' => ['/site/flushblog']],
+                ['label' => 'Статьи', 'url' => ['/article/list']],
+
+        ['label' => 'Сброс кеша блога', 'url' => ['/site/flushblog']],
                 ['label' => 'Сброс кеша', 'url' => ['/site/flushcache']],
                 ['label' => 'Импорт фото', 'url' => ['/site/importfoto']],
             ],

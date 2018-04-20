@@ -7,7 +7,28 @@ use dosamigos\editable\Editable;
 $this->title = 'События';
 $this->params['breadcrumbs'][] = $this->title;
 
+?>
 
+<div class="filter-form">
+    <form method="get" action="">
+        <label for="year">Год: </label>
+        <select name="year">
+            <option value="">-</option>
+            <?
+            $selected = intval(Yii::$app->request->get('year'));
+            $years = array_reverse(range(1993, date("Y")));
+            foreach ($years as $year){?>
+                <option value="<?=$year?>" <?= ($selected == $year) ? 'selected' : ''?> ><?=$year?></option>
+            <?}?>
+        </select>
+
+        <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <input type="submit" value="фильтровать">
+    </form>
+</div>
+
+
+<?
 echo Html::a('Добавить',Url::to(['event/add']));
 echo '<br><br>';
 

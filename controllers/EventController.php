@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\models\Blog;
 use app\models\Files;
+use app\models\User;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\data\ArrayDataProvider;
@@ -36,7 +37,7 @@ class EventController extends Controller
                         'allow' => true,
                         'roles' => ['@'],
                         'matchCallback' => function ($rule, $action) {
-                            return !Yii::$app->user->isGuest;
+                            return User::isUserAdmin();
                         }
                     ],
                 ],
@@ -78,6 +79,11 @@ class EventController extends Controller
 
     public function actionList(){
         $query = Event::find();
+
+        $filter   = Yii::$app->request->get();
+        if (!empty($filter['year'])){
+                $query->andwhere( 'YEAR(`date_start`) = :year', [':year' => $filter['year']]);
+        }
 
         $provider = new ActiveDataProvider([
             'query' => $query,

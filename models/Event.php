@@ -115,4 +115,17 @@
 
             return $items;
         }
+
+
+        public static function listForEditable(){
+
+            $list = Event::find()->all();
+
+            $res = [];
+            foreach ($list as $item){
+                $res[] =  ['value' =>  $item->id,  'text' => $item->title];
+            }
+
+            return $res;
+        }
     }

@@ -16,9 +16,11 @@ class m171103_111357_article extends Migration
             `title` varchar(255) NOT NULL,
             `body` longtext NOT NULL,
             `photo` varchar(255) NOT NULL,
+            `event_id` int(10) UNSIGNED NULL NOT NULL,
 
               PRIMARY KEY (`id`),
-              KEY `publish_date` (`publish_date`)
+              KEY `publish_date` (`publish_date`),
+              KEY `event_id` (`event_id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
         ');
