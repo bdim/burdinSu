@@ -1,2 +1,4 @@
 language: php
  - 7.1
+ php:
+   - nightly
